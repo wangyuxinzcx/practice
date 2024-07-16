@@ -1,44 +1,48 @@
-//单个相机的图像采集
-void CaptureVideo::CameraCapture(CGrabResultPtr* GrabRes, AVFrame** tarFrames,AVFrame* finalFrame, int cam_idx,bool isCali, bool *detectSucess,string *errorMessage)
-{
-	cameras_[cam_idx].RetrieveResult(5000, GrabRes[cam_idx], TimeoutHandling_ThrowException);
-	if (GrabRes[cam_idx]->GrabSucceeded())
-	{
-		cv::cuda::GpuMat& bayerGR_mat = FrameProc::bayerGR_mat[cam_idx];
-		cv::cuda::GpuMat& bgr_mat = FrameProc::bgr_mat[cam_idx];
-		cv::cuda::GpuMat& bgr_mat_res = FrameProc::bgr_mat_res[cam_idx];
-		int offset = (CAPTURE_H - VIEW_H)/2 * bgr_mat_res.step + (CAPTURE_W - VIEW_W) / 2 * 3;
-
-		AVFrame* tarFrame = tarFrames[cam_idx];
-		CHECK(cudaMemcpy2D(bayerGR_mat.data, bayerGR_mat.step, GrabRes[cam_idx]->GetBuffer(),
-			GrabRes[cam_idx]->GetWidth(), CAPTURE_W, CAPTURE_H, cudaMemcpyDefault));
-		cv::cuda::cvtColor(bayerGR_mat, bgr_mat, cv::COLOR_BayerRGGB2BGR);
-		if (isCali)
-		{
-			cv::Mat bgrmat;
-			bgr_mat.download(src_gray_mat_[cam_idx]);
-			*detectSucess = capture_and_detect(src_gray_mat_[cam_idx], cam_idx,errorMessage);
-		}
-		cv::Mat h_frame;
-		bgr_mat.download(h_frame); // 首先将GpuMat下载到CPU
-		// cv::imwrite（to_string(cam_idx) + "");
-		// 在CPU上的Mat对象上绘制字符串
-		String_t SerialNumber = cameras_[cam_idx].GetDeviceInfo().GetSerialNumber();
-		string SN =std::string("SN:") + SerialNumber.c_str();
-		int font_face = cv::FONT_HERSHEY_DUPLEX;
-		double font_scale = 3.0;
-		cv::Point text_position((CAPTURE_W- VIEW_W)/2 + 80, CAPTURE_H - VIEW_H - 200  );
-		cv::Scalar text_color(255, 255, 255); // 白色文本
-		cv::putText(h_frame, SN, text_position, font_face, font_scale, text_color);
-		bgr_mat.upload(h_frame);
-
-		CHECK(BGRToNV12(tarFrame->data[0], tarFrame->linesize[0], tarFrame->data[1], tarFrame->linesize[1],
-			bgr_mat.data + offset, bgr_mat.step, VIEW_W, VIEW_H));
-
-		FrameProc::frame_stitch(finalFrame, tarFrame, cam_idx);
-	}
-	else
-	{
-		cout << "Error: " << std::hex << GrabRes[cam_idx]->GetErrorCode() << std::dec << " " << GrabRes[cam_idx]->GetErrorDescription() << endl;
-	}
-}
+<?xml version="1.0"?>
+<opencv_storage>
+<H_mat0 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    8.1336434872221786e-01 -8.4817182366922483e-03
+    6.8290184930573730e+01 -1.1057911113385865e-01
+    9.0322192628793030e-01 9.7634941641564723e+01
+    -1.1226806269130148e-04 -3.5038215615216812e-06 1.</data></H_mat0>
+<H_mat1 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    8.8243309903820122e-01 -2.5143248604666893e-03
+    7.5777996751492324e+01 -5.6097339386567545e-02
+    9.4212588249712503e-01 5.8770692048094659e+01
+    -5.8567111531606769e-05 9.7913144924225388e-07 1.</data></H_mat1>
+<H_mat2 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    9.9999999999999978e-01 -1.8566756705651908e-16
+    1.9691137908567681e-13 3.5415239903257215e-17 9.9999999999999978e-01
+    0. 3.4597790163915677e-20 -1.5216349720966426e-19 1.</data></H_mat2>
+<H_mat3 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    1.1503683411500494e+00 -4.9717870241361567e-03
+    -9.6722429251868533e+01 5.7622033584599983e-02
+    1.0683908873857024e+00 -7.0338830939118694e+01
+    5.6262945623519644e-05 -4.2156862822082025e-06 1.</data></H_mat3>
+<H_mat4 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    1.4183244643237820e+00 2.5426848298859234e-03
+    -2.9730105401536571e+02 1.3253930777775139e-01
+    1.2062261561233347e+00 -1.8779739254929854e+02
+    1.3423317743110568e-04 -2.3724072996080772e-06
+    9.9999999999999989e-01</data></H_mat4>
+</opencv_storage>
