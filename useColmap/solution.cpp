@@ -1,6 +1,6 @@
 #include <iostream>
-#include <cstdlib> 
-#include <fstream> 
+#include <cstdlib> // 包含std::system
+#include <fstream> // 包含std::ofstream
 #include <sstream>
 #include <algorithm>
 #include <string>
@@ -9,6 +9,7 @@
 #include <map>
 #include <iomanip>
 #include <cstring>
+
 
 // 转换字符串为大写
 std::string to_upper(const std::string& str) {
@@ -154,38 +155,47 @@ void save_lines_containing_jpg(const std::string& input_file_path, const std::st
             std::istringstream iss(line);
             double num;
             int count = 0;
-
-            // 读取每个小数，直到达到第5个位置或者读完所有内容
+            int pre_jpg_num = 0;
+            bool pre_jpg_num_found = false;
+            
+            // 在每一行中读取信息
             while (iss >> num) {
                 count++;
-                if (count >= 2 && count <= 5) {
-                    doubles.push_back(num);
-                }
-                // 如果已经读取了第5个小数，退出循环
-                if (count >= 5) {
+                // 读取相机号
+                if (count == 9) {
+                    pre_jpg_num = num;
+                    pre_jpg_num_found = true;
                     break;
                 }
-            }
-
-            // 调用 quaternionToRotationMatrix 函数计算旋转矩阵
-            std::vector<std::vector<double>> rotation_matrix = quaternionToRotationMatrix(doubles[0], doubles[1], doubles[2], doubles[3]);
-
-            // 写入旋转矩阵到 XML 文件
-            output_xml << "<H_mat" << jpg_count << " type_id=\"opencv-matrix\">" << std::endl;
-            output_xml << "  <rows>3</rows>" << std::endl;
-            output_xml << "  <cols>3</cols>" << std::endl;
-            output_xml << "  <dt>d</dt>" << std::endl;
-            output_xml << "  <data>" << std::endl;
-            for (int i = 0; i < 3; ++i) {
-                for (int j = 0; j < 3; ++j) {
-                    output_xml << "    " << rotation_matrix[i][j];
+                // 读取四元数
+                else if(count >= 2 && count <= 5){
+                        doubles.push_back(num);
                 }
-                output_xml << std::endl;
             }
-            output_xml << "  </data>" << std::endl;
-            output_xml << "</H_mat" << jpg_count << ">" << std::endl;
 
-            jpg_count++;
+            // 确保提取到的四个数
+            if (doubles.size() == 4 && pre_jpg_num_found) {
+                // 调用 quaternionToRotationMatrix 函数计算旋转矩阵
+                std::vector<std::vector<double>> rotation_matrix = quaternionToRotationMatrix(doubles[0], doubles[1], doubles[2], doubles[3]);
+
+                // 写入旋转矩阵到 XML 文件
+                output_xml << "<H_mat" << pre_jpg_num << " type_id=\"opencv-matrix\">" << std::endl;
+                output_xml << "  <pre_jpg_num>" << pre_jpg_num << "</pre_jpg_num>" << std::endl;
+                output_xml << "  <rows>3</rows>" << std::endl;
+                output_xml << "  <cols>3</cols>" << std::endl;
+                output_xml << "  <dt>d</dt>" << std::endl;
+                output_xml << "  <data>" << std::endl;
+                for (int i = 0; i < 3; ++i) {
+                    for (int j = 0; j < 3; ++j) {
+                        output_xml << "    " << rotation_matrix[i][j];
+                    }
+                    output_xml << std::endl;
+                }
+                output_xml << "  </data>" << std::endl;
+                output_xml << "</H_mat" << pre_jpg_num << ">" << std::endl;
+                // 
+                jpg_count++;
+            }
         }
 
         // 设置 JPG 行的最大计数
