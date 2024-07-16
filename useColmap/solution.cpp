@@ -23,9 +23,17 @@ int execute_colmap_commands(const std::string& colmap_path,
                             const std::string& database_path,
                             const std::string& image_path,
                             const std::string& output_path) {
+
+    std::string database_creator_command = colmap_path + " database_creator --database_path " + database_path;
+    int return_code = std::system(database_creator_command.c_str());
+    if (return_code != 0) {
+        std::cerr << "Error executing database_creator command!" << std::endl;
+        return return_code;
+    }
+
     // 调用COLMAP feature_extractor
     std::string feature_extractor_command = colmap_path + " feature_extractor --database_path " + database_path + " --image_path " + image_path;
-    int return_code = std::system(feature_extractor_command.c_str());
+    return_code = std::system(feature_extractor_command.c_str());
     if (return_code != 0) {
         std::cerr << "Error executing feature_extractor command!" << std::endl;
         return return_code;
@@ -215,13 +223,13 @@ void save_lines_containing_jpg(const std::string& input_file_path, const std::st
 }
 
 int main() {
-    std::string database_path = "D:\\practice\\test_scene\\database.db";
+    std::string database_path = "D:\\practice\\database.db";
     std::string image_path = "D:\\practice\\test_scene\\images";
     std::string output_path = "D:\\practice\\test_scene\\output";
     std::string colmap_path = "D:\\桌面\\COLMAP-3.9.1-windows-cuda\\COLMAP-3.9.1-windows-cuda\\colmap.bat";
 
     // 调用COLMAP  
-    //int result = execute_colmap_commands(colmap_path, database_path, image_path, output_path);
+    int result = execute_colmap_commands(colmap_path, database_path, image_path, output_path);
     
     save_lines_containing_jpg(output_path + "\\0\\images.txt", output_path + "\\0\\images_simplified.xml");
 
