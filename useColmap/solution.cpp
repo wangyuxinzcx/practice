@@ -82,13 +82,13 @@ public:
     static void save_lines(const std::string& input_file_path, const std::string& output_file_path) {
         std::ifstream input_file(input_file_path);
         if (!input_file.is_open()) {
-            std::cerr << "无法打开输入文件: " << input_file_path << std::endl;
+            std::cerr << "ERROR: Failed to open the input file: " << input_file_path << std::endl;
             return;
         }
 
         std::ofstream output_file(output_file_path);
         if (!output_file.is_open()) {
-            std::cerr << "无法打开输出文件: " << output_file_path << std::endl;
+            std::cerr << ""ERROR: Failed to open the output file:: " << output_file_path << std::endl;
             input_file.close();
             return;
         }
@@ -108,13 +108,13 @@ public:
     static void save_lines_containing_jpg(const std::string& input_file_path, const std::string& output_xml_path) {
         std::ifstream input_file(input_file_path);
         if (!input_file.is_open()) {
-            std::cerr << "无法打开输入文件: " << input_file_path << std::endl;
+            std::cerr << "ERROR: Failed to open the input file: " << input_file_path << std::endl;
             return;
         }
 
         std::ofstream output_xml(output_xml_path);
         if (!output_xml.is_open()) {
-            std::cerr << "无法创建 XML 文件: " << output_xml_path << std::endl;
+            std::cerr << "ERROR: Failed to create the XML file:: " << output_xml_path << std::endl;
             input_file.close();
             return;
         }
@@ -180,7 +180,7 @@ public:
         input_file.close();
         output_xml.close();
 
-        std::cout << "XML 文件保存成功: " << output_xml_path << std::endl;
+        std::cout << "XML save succeed: " << output_xml_path << std::endl;
     }
 };
 
