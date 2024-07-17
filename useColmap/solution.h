@@ -26,8 +26,8 @@ public:
 
     static void save_lines(const std::string& input_file_path, const std::string& output_file_path);
 
-    static void save_lines_containing_jpg(const std::string& input_file_path, const std::string& output_xml_path);
-
+    static void save_lines_containing_jpg(const std::string& images_file_path, const std::string& camera_file_path, const std::string& output_xml_path);
+    static std::string remove_letters(const std::string& line);
 };
 
 #endif // CAPTUREPROC_H

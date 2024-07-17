@@ -76,8 +76,8 @@
     }
 
     void CaptureVideo::save_lines(const std::string& input_file_path, const std::string& output_file_path) {
-        std::ifstream input_file(input_file_path);
-        if (!input_file.is_open()) {
+        std::ifstream images_txt_file(input_file_path);
+        if (!images_txt_file.is_open()) {
             std::cerr << "无法打开输入文件: " << input_file_path << std::endl;
             return;
         }
@@ -85,33 +85,38 @@
         std::ofstream output_file(output_file_path);
         if (!output_file.is_open()) {
             std::cerr << "无法打开输出文件: " << output_file_path << std::endl;
-            input_file.close();
+            images_txt_file.close();
             return;
         }
 
         std::string line;
-        while (std::getline(input_file, line)) {
+        while (std::getline(images_txt_file, line)) {
             std::string upper_line = to_upper(line);
             if (upper_line.find("JPG") != std::string::npos) {
                 output_file << line << std::endl;
             }
         }
 
-        input_file.close();
+        images_txt_file.close();
         output_file.close();
     }
 
-    void CaptureVideo::save_lines_containing_jpg(const std::string& input_file_path, const std::string& output_xml_path) {
-        std::ifstream input_file(input_file_path);
-        if (!input_file.is_open()) {
-            std::cerr << "无法打开输入文件: " << input_file_path << std::endl;
+    void CaptureVideo::save_lines_containing_jpg(const std::string& images_file_path, const std::string& camera_file_path, const std::string& output_xml_path) {
+        std::ifstream images_txt_file(images_file_path);
+        std::ifstream camera_txt_file(camera_file_path);
+        if (!images_txt_file.is_open()) {
+            std::cerr << "无法打开输入文件: " << images_file_path << std::endl;
+            return;
+        }
+        if (!camera_txt_file.is_open()) {
+            std::cerr << "无法打开输入文件: " << camera_file_path << std::endl;
             return;
         }
 
         std::ofstream output_xml(output_xml_path);
         if (!output_xml.is_open()) {
             std::cerr << "无法创建 XML 文件: " << output_xml_path << std::endl;
-            input_file.close();
+            images_txt_file.close();
             return;
         }
 
@@ -121,14 +126,18 @@
         std::string line;
         int jpg_count = 0;
 
-        while (std::getline(input_file, line)) {
+        while (std::getline(images_txt_file, line)) {
             std::string upper_line = line;
             std::transform(upper_line.begin(), upper_line.end(), upper_line.begin(), ::toupper);
 
             if (upper_line.find("JPG") != std::string::npos) {
-                std::vector<double> doubles;
+                // 四元数
+                std::vector<double> quaternion;
+                // 平移矩阵
+                std::vector<double> translation_matrix;
+
                 std::istringstream iss(line);
-                double num;
+                double num = 0.0;
                 int count = 0;
                 int pre_jpg_num = 0;
                 bool pre_jpg_num_found = false;
@@ -141,12 +150,15 @@
                         break;
                     }
                     else if (count >= 2 && count <= 5) {
-                        doubles.push_back(num);
+                        quaternion.push_back(num);
+                    }
+                    else if (count >= 6 && count <= 8) {
+                        translation_matrix.push_back(num);
                     }
                 }
 
-                if (doubles.size() == 4 && pre_jpg_num_found) {
-                    std::vector<std::vector<double>> rotation_matrix = quaternionToRotationMatrix(doubles[0], doubles[1], doubles[2], doubles[3]);
+                if (quaternion.size() == 4 && pre_jpg_num_found && translation_matrix.size() == 3) {
+                    std::vector<std::vector<double>> rotation_matrix = quaternionToRotationMatrix(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
 
                     output_xml << "<H_mat" << pre_jpg_num << " type_id=\"opencv-matrix\">" << std::endl;
                     output_xml << "  <pre_jpg_num>" << pre_jpg_num << "</pre_jpg_num>" << std::endl;
@@ -160,6 +172,7 @@
                         }
                         output_xml << std::endl;
                     }
+                    output_xml << translation_matrix[0] << "    " << translation_matrix[1] << "    " << translation_matrix[2] << std::endl;
                     output_xml << "  </data>" << std::endl;
                     output_xml << "</H_mat" << pre_jpg_num << ">" << std::endl;
                     jpg_count++;
@@ -171,13 +184,58 @@
             }
         }
 
+        while (std::getline(camera_txt_file, line)) {
+            std::string upper_line = to_upper(line);
+            std::transform(upper_line.begin(), upper_line.end(), upper_line.begin(), ::toupper);
+            if (upper_line.find("SIMPLE") != std::string::npos) {
+                line = remove_letters(line);
+                // 内参
+                std::vector<double> internal_reference;
+                std::istringstream iss(line);
+                double num = 0.0;
+                int count = 0;
+                int camera_num = 0;
+
+                while (iss >> num) {
+                    count++;
+                    if (count >= 4 && count <= 7) {
+                        internal_reference.push_back(num);
+                    }
+                    if (count == 1) {
+                        camera_num = num;
+                    }
+                }
+
+                if (internal_reference.size() == 4) {
+                    output_xml << "<H_mat" << camera_num << " type_id=\"opencv-matrix\">" << std::endl;
+                    output_xml << "  <pre_jpg_num>" << camera_num << "</pre_jpg_num>" << std::endl;
+                    output_xml << "  <dt>d</dt>" << std::endl;
+                    output_xml << "  <data>" << std::endl;
+                    output_xml << internal_reference[0] << "    " << internal_reference[1] << "    " << internal_reference[2] << "    " << internal_reference[3] << std::endl;
+                    output_xml << "  </data>" << std::endl;
+                    output_xml << "</H_mat" << camera_num << ">" << std::endl;
+                }
+            }
+        }
+
         output_xml << "</opencv_storage>" << std::endl;
 
-        input_file.close();
+        images_txt_file.close();
         output_xml.close();
 
         std::cout << "XML 文件保存成功: " << output_xml_path << std::endl;
     }
+
+    std::string CaptureVideo::remove_letters(const std::string& line) {
+        std::string result;
+        for (char c : line) {
+            if (std::isdigit(static_cast<unsigned char>(c)) || std::isspace(static_cast<unsigned char>(c)) || c == '.') {
+                result += c;
+            }
+        }
+        return result;
+    }
+
 
 
 int main() {
@@ -186,9 +244,9 @@ int main() {
     std::string output_path = "D:\\practice\\test_scene\\output_2";
     std::string colmap_path = "D:\\桌面\\COLMAP-3.9.1-windows-cuda\\COLMAP-3.9.1-windows-cuda\\colmap.bat";
 
-    int result = CaptureVideo::execute_colmap_commands(colmap_path, database_path, image_path, output_path);
+    //int result = CaptureVideo::execute_colmap_commands(colmap_path, database_path, image_path, output_path);
 
-    CaptureVideo::save_lines_containing_jpg(output_path + "\\0\\images.txt", output_path + "\\0\\images_simplified.xml");
+    CaptureVideo::save_lines_containing_jpg(output_path + "\\0\\images.txt", output_path + "\\0\\cameras.txt",output_path + "\\0\\images_simplified.xml");
 
     return 0;
 }
