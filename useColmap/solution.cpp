@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <sstream>
 #include <cstdlib>
+#include "solution.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -82,13 +83,13 @@ public:
     static void save_lines(const std::string& input_file_path, const std::string& output_file_path) {
         std::ifstream input_file(input_file_path);
         if (!input_file.is_open()) {
-            std::cerr << "ERROR: Failed to open the input file: " << input_file_path << std::endl;
+            std::cerr << "无法打开输入文件: " << input_file_path << std::endl;
             return;
         }
 
         std::ofstream output_file(output_file_path);
         if (!output_file.is_open()) {
-            std::cerr << ""ERROR: Failed to open the output file:: " << output_file_path << std::endl;
+            std::cerr << "无法打开输出文件: " << output_file_path << std::endl;
             input_file.close();
             return;
         }
@@ -108,13 +109,13 @@ public:
     static void save_lines_containing_jpg(const std::string& input_file_path, const std::string& output_xml_path) {
         std::ifstream input_file(input_file_path);
         if (!input_file.is_open()) {
-            std::cerr << "ERROR: Failed to open the input file: " << input_file_path << std::endl;
+            std::cerr << "无法打开输入文件: " << input_file_path << std::endl;
             return;
         }
 
         std::ofstream output_xml(output_xml_path);
         if (!output_xml.is_open()) {
-            std::cerr << "ERROR: Failed to create the XML file:: " << output_xml_path << std::endl;
+            std::cerr << "无法创建 XML 文件: " << output_xml_path << std::endl;
             input_file.close();
             return;
         }
@@ -180,7 +181,7 @@ public:
         input_file.close();
         output_xml.close();
 
-        std::cout << "XML save succeed: " << output_xml_path << std::endl;
+        std::cout << "XML 文件保存成功: " << output_xml_path << std::endl;
     }
 };
 
@@ -188,7 +189,7 @@ int main() {
     std::string database_path = "D:\\practice\\database.db";
     std::string image_path = "D:\\practice\\test_scene\\images";
     std::string output_path = "D:\\practice\\test_scene\\output_2";
-    std::string colmap_path = "D:\\妗岄潰\\COLMAP-3.9.1-windows-cuda\\COLMAP-3.9.1-windows-cuda\\colmap.bat";
+    std::string colmap_path = "D:\\桌面\\COLMAP-3.9.1-windows-cuda\\COLMAP-3.9.1-windows-cuda\\colmap.bat";
 
     int result = CaptureVideo::execute_colmap_commands(colmap_path, database_path, image_path, output_path);
 
