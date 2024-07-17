@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <filesystem>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -8,21 +7,17 @@
 #include <cstdlib>
 #include "solution.h"
 
-namespace fs = std::experimental::filesystem;
 
-class CaptureVideo {
-public:
-    static std::string to_upper(const std::string& str) {
+    std::string CaptureVideo::to_upper(const std::string& str) {
         std::string upper_str = str;
         std::transform(upper_str.begin(), upper_str.end(), upper_str.begin(), ::toupper);
         return upper_str;
     }
 
-    static int execute_colmap_commands(const std::string& colmap_path,
+    int CaptureVideo::execute_colmap_commands(const std::string& colmap_path,
         const std::string& database_path,
         const std::string& image_path,
         const std::string& output_path) {
-
         std::string database_creator_command = colmap_path + " database_creator --database_path " + database_path;
         int return_code = std::system(database_creator_command.c_str());
         if (return_code != 0) {
@@ -62,7 +57,7 @@ public:
         return 0;
     }
 
-    static std::vector<std::vector<double>> quaternionToRotationMatrix(double w, double x, double y, double z) {
+    std::vector<std::vector<double>> CaptureVideo::quaternionToRotationMatrix(double w, double x, double y, double z) {
         std::vector<std::vector<double>> R(3, std::vector<double>(3));
 
         R[0][0] = 1 - 2 * y * y - 2 * z * z;
@@ -80,7 +75,7 @@ public:
         return R;
     }
 
-    static void save_lines(const std::string& input_file_path, const std::string& output_file_path) {
+    void CaptureVideo::save_lines(const std::string& input_file_path, const std::string& output_file_path) {
         std::ifstream input_file(input_file_path);
         if (!input_file.is_open()) {
             std::cerr << "无法打开输入文件: " << input_file_path << std::endl;
@@ -106,7 +101,7 @@ public:
         output_file.close();
     }
 
-    static void save_lines_containing_jpg(const std::string& input_file_path, const std::string& output_xml_path) {
+    void CaptureVideo::save_lines_containing_jpg(const std::string& input_file_path, const std::string& output_xml_path) {
         std::ifstream input_file(input_file_path);
         if (!input_file.is_open()) {
             std::cerr << "无法打开输入文件: " << input_file_path << std::endl;
@@ -183,7 +178,7 @@ public:
 
         std::cout << "XML 文件保存成功: " << output_xml_path << std::endl;
     }
-};
+
 
 int main() {
     std::string database_path = "D:\\practice\\database.db";

@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <experimental/filesystem>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -13,7 +12,6 @@
 #include <thread>
 #include <chrono>
 
-namespace fs = std::experimental::filesystem;
 
 class CaptureVideo {
 public:
@@ -30,7 +28,6 @@ public:
 
     static void save_lines_containing_jpg(const std::string& input_file_path, const std::string& output_xml_path);
 
-    static void capture_and_save_images(const std::string& camera_index, const std::string& save_path, int interval_seconds);
 };
 
 #endif // CAPTUREPROC_H
