@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opencv_storage>
+<H_mat1 type_id="opencv-matrix">
+  <pre_jpg_num>1</pre_jpg_num>
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    0.993716    0.000401381    -0.111934
+    -0.00262197    0.999803    -0.019692
+    0.111904    0.0198617    0.993521
+4.67863    -0.0139741    1.1723
+  </data>
+</H_mat1>
+<H_mat2 type_id="opencv-matrix">
+  <pre_jpg_num>2</pre_jpg_num>
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    0.999852    0.000431982    0.0172179
+    -0.000471067    0.999997    0.00226602
+    -0.0172169    -0.00227379    0.999849
+2.08308    0.0520873    0.540495
+  </data>
+</H_mat2>
+<H_mat3 type_id="opencv-matrix">
+  <pre_jpg_num>3</pre_jpg_num>
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    0.984914    0.00138871    0.173041
+    0.00309818    0.999666    -0.0256568
+    -0.173019    0.0258059    0.98458
+-1.78428    -0.0296189    -0.0771377
+  </data>
+</H_mat3>
+<H_mat4 type_id="opencv-matrix">
+  <pre_jpg_num>4</pre_jpg_num>
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    0.949264    -0.00169561    0.314475
+    0.0112687    0.999527    -0.0286261
+    -0.314278    0.0307174    0.948834
+-5.11268    -0.0625716    0.813926
+  </data>
+</H_mat4>
+<H_mat5 type_id="opencv-matrix">
+  <pre_jpg_num>5</pre_jpg_num>
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    0.896959    -0.0054465    0.442081
+    0.00661785    0.999977    -0.00110741
+    -0.442065    0.00391893    0.896975
+-8.12269    -0.114519    2.41751
+  </data>
+</H_mat5>
+<H_mat1 type_id="opencv-matrix">
+  <pre_jpg_num>1</pre_jpg_num>
+  <dt>d</dt>
+  <data>
+2323.66    1232    1028    0.119032
+  </data>
+</H_mat1>
+<H_mat2 type_id="opencv-matrix">
+  <pre_jpg_num>2</pre_jpg_num>
+  <dt>d</dt>
+  <data>
+2368.76    1232    1028    0.125204
+  </data>
+</H_mat2>
+<H_mat3 type_id="opencv-matrix">
+  <pre_jpg_num>3</pre_jpg_num>
+  <dt>d</dt>
+  <data>
+2334.06    1232    1028    0.14303
+  </data>
+</H_mat3>
+<H_mat4 type_id="opencv-matrix">
+  <pre_jpg_num>4</pre_jpg_num>
+  <dt>d</dt>
+  <data>
+2342.27    1232    1028    0.151201
+  </data>
+</H_mat4>
+<H_mat5 type_id="opencv-matrix">
+  <pre_jpg_num>5</pre_jpg_num>
+  <dt>d</dt>
+  <data>
+2349.51    1232    1028    0.152343
+  </data>
+</H_mat5>
+</opencv_storage>
