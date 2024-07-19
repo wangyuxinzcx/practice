@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<H_mat0 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+        0.736117 -0.000869745      758.271
+   -0.107095     0.911016      76.0352
+ -0.00010979  2.67756e-06            1.</data></H_mat0>
+<H_mat1 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+         0.84458     0.015086       440.38
+  -0.0612249     0.944021      4.05214
+-6.23592e-05  1.12412e-05            1.</data></H_mat1>
+<H_mat2 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    1 0 0
+0 1 0
+0 0 1.</data></H_mat2>
+<H_mat3 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+     1.16124  0.00570181    -474.852
+  0.0622959     1.08714    -68.8157
+6.78282e-05 -2.0301e-06           1.</data></H_mat3>
+<H_mat4 type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    1.37097   0.0249341    -1056.29
+    0.13526     1.25016    -282.115
+0.000148442  1.2489e-05           1.</data></H_mat4>
+</opencv_storage>
